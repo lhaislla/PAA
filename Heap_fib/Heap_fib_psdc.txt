@@ -1,0 +1,102 @@
+FIB-HEAP-INSERT(H,x):
+	x.grau = 0
+	x.p = NIL
+	x.filho = NIL
+	x.marca = FALSE
+	if H.min == NIL
+		crie a lista de raízes de H contendo só x 
+		H.in = x
+	else:
+		Insira x na lsita de raízes de H contendo só x
+		if x.chave < H.min.chave 
+			H.min = x
+	H.n = H.n+1
+
+FIB-HEAP-UNION(H1,H2)
+	H = Make-FIB-HEAP()
+	H.min = H1.min
+	concatenar a lsita de raízes de H2 com a lista d eraízes de H
+	if (H1.min = Nil) ou (H2.min != Nil and H2.min < H1.min):
+		H.min = H1.min
+	H.n = H1.n + H2.n
+	return H
+
+
+FIB-HEAP-EXTRACT-MIN(H):
+	z = H.min
+	if z != None
+		for  x in z :
+			adicionar x à lista de raízes de H
+			x.p = None
+		remova z da lista de raízes de H
+		if z = z.right
+			H.min = None
+		else
+			H.min = z.right
+			Consolidate(H)
+		H.n = H.n -1
+	return z
+
+
+
+Consolidate(H):
+    seja A[0 .. D(h.n)] um novo arranjo
+    for i = 0 to D(H.n)
+		A[i] = NIL
+	for cada nó w na lista de raízes de H:
+		x = w
+		d = x.grau
+		while A[d] != NIL
+			y = A[d]
+			if x.key > y.key
+				trocar x com y
+			FIB-HEAP-LINK(H,y,x)
+			A[d] = NIL
+			d = d+1
+		A[d] = x
+	H.min = NIL
+	for i = 0 to D(H.n)
+		if A[i] != NIL
+			if H.min == NIL
+				criar a lista de raízes de H contendo A[i]
+				H.min = A[i]
+			else
+				inserir A[i] na lista de raízes de H
+				if A[i].key < H.min.key
+					H.min = A[i]
+FIB-HEAP-LINK(H,y,x)
+	remover y da lista de raízes de H
+ 	tornar y um filho de x, incrementando x.grau
+	y.marca = FALSE
+ 
+ 
+FIB-DECREASE-KEY(H,x,k):
+	IF k > x.key
+		ERRO "Nova chave é maior que chave atual"
+	x.key = k
+	y = x.p
+	if y != NIL and x.key < y.key:
+		CUT(H,x,y)
+		CASCADING-CUT(H,y)
+	if x.key < H.min.key
+		H.min = x
+  
+CUT(H,x,y):
+      remover x da lista de filhos de y decrementando y.grau
+      adicionar x à lista de raízes de H
+      x.p = NIL
+      x.marca = FALSE
+      
+CASCADING-CUT(H,y):
+    z=y.p
+	if z != NIL:
+		if y.marca == FALSE:
+			y.marca= TRUE
+		else:
+			CUT(H,y,z)
+			CASCADING-CUT(H,z)
+	
+ 
+FIB-HEAP-DELETE(H,x):
+    FIB-DECREASE-KEY(H,x,-INF)
+	FIB-HEAP-EXTRACT-MIN(H)
